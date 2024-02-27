@@ -4,76 +4,89 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
-## Step 1: Start the Metro Server
+# Splast Screen Set-Up on both platform
+------------------------------------------
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## Installation
 
-To start Metro, run the following command from the _root_ of your React Native project:
-
+First, you need to install the library in your React Native project using a package manager like npm or yarn:
 ```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+npm install --save react-native-bootsplash && cd ios && pod install
 ```
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
+# --- or ---
 
 ```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+npx yarn add react-native-bootsplash && cd ios && pod install
 ```
 
-### For iOS
-
+Use below command in terminall but replace your image path on ```assets/images/logo_ss.png```(path will checking by root folder) and background color on ```#87CEEB```.
 ```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+yarn react-native generate-bootsplash assets/images/logo_ss.png \
+  --platforms=android,ios \
+  --background=#87CEEB
 ```
+  ![Screenshot 2024-02-27 at 5 07 41 PM](https://github.com/SavaliyaZeel/splashscreen/assets/158541274/00b1485c-d190-4b4b-88a4-8b24cc2d0f45)
+  
+  ![Screenshot 2024-02-27 at 5 08 37 PM](https://github.com/SavaliyaZeel/splashscreen/assets/158541274/673b02a4-ccc2-4e69-9ef8-761a5202fb5e)
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+## IOS SET-UP
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+Add some code in your ```ios/YourProjectName/AppDelegate.mm``` file.
+```bash
+#import "RNBootSplash.h"
+```
+![Screenshot 2024-02-27 at 5 18 10 PM](https://github.com/SavaliyaZeel/splashscreen/assets/158541274/68c8a22e-1721-43b5-afe4-45c845a5cdda)
+```bash
+// ⬇️ Add this before file @end
+- (UIView *)createRootViewWithBridge:(RCTBridge *)bridge
+                          moduleName:(NSString *)moduleName
+                           initProps:(NSDictionary *)initProps {
+  UIView *rootView = [super createRootViewWithBridge:bridge
+                                          moduleName:moduleName
+                                           initProps:initProps];
 
-## Step 3: Modifying your App
+  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView]; // ⬅️ initialize the splash screen
 
-Now that you have successfully run the app, let's modify it.
+  return rootView;
+}
+```
+![Screenshot 2024-02-27 at 5 24 07 PM](https://github.com/SavaliyaZeel/splashscreen/assets/158541274/b0346428-ba58-4c3f-9bfe-508849a8e91f)
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+### Android SET-UP
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+Add ```android:theme="@style/BootTheme"``` code in ```<activity>``` tag of `MainActivity` in ```android/app/src/main/AndroidManifest.xml``` file.
 
-## Congratulations! :tada:
+![Screenshot 2024-02-27 at 5 16 54 PM](https://github.com/SavaliyaZeel/splashscreen/assets/158541274/a9d33679-3674-44cd-a4da-7f9c2123033e)
 
-You've successfully run and modified your React Native App. :partying_face:
+Finally add code in ```android/app/src/main/java/com/yourprojectname/MainActivity.java``` file.
+```bash
+import android.os.Bundle;
+import com.zoontek.rnbootsplash.RNBootSplash;
+```
+![Screenshot 2024-02-27 at 5 29 54 PM](https://github.com/SavaliyaZeel/splashscreen/assets/158541274/3a1ab169-4cd1-4dc2-88d8-7616d48ee496)
 
-### Now what?
+If your react-native version is small than 0.73, add below code.
+```bash
+@Override
+  protected void onCreate(Bundle savedInstanceState) {
+    RNBootSplash.init(this, R.style.BootTheme); // ⬅️ initialize the splash screen
+    super.onCreate(savedInstanceState); // or super.onCreate(null) with react-native-screens
+  }
+```
+else add below code.
+```bash
+override fun onCreate(savedInstanceState: Bundle?) {
+    RNBootSplash.init(this, R.style.BootTheme) // ⬅️ initialize the splash screen
+    super.onCreate(null) // or super.onCreate(null) with react-native-screens
+  }
+```
+![Screenshot 2024-02-27 at 5 30 00 PM](https://github.com/SavaliyaZeel/splashscreen/assets/158541274/64622e63-912e-47b1-977a-0e64a8865456)
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+# Hide Splash Screen
 
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Use below code for hide splash screen.
+```bash
+BootSplash.hide()
+```
+![Screenshot 2024-02-27 at 5 32 23 PM](https://github.com/SavaliyaZeel/splashscreen/assets/158541274/2bb37b3a-6cee-4d52-a49c-38d7fa258cb3)
